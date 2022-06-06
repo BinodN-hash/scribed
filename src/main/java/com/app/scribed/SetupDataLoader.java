@@ -15,6 +15,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import javax.transaction.Transactional;
+import java.util.Set;
 
 @Component
 @RequiredArgsConstructor
@@ -50,6 +51,21 @@ public class SetupDataLoader implements ApplicationListener<ContextRefreshedEven
 
         }
         return permission;
+
+    }
+
+    @Transactional
+    Group createGroup(final GroupType code, final String name, final Set<Permission> permissions){
+        Group group = groupRepo.findByName(name);
+        if (group == null){
+            group = new Group();
+            group.setName(name);
+            group.setCode(code);
+
+        }
+        group.setPermissions(permissions);
+        group = groupRepo.save(group);
+        return group;
 
     }
 
